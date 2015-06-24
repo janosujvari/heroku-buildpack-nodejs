@@ -84,6 +84,52 @@ install_bins() {
   warn_old_npm
 }
 
+
+getandbuild_opencv(){
+  # fetch and cache the vulcan build
+  OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
+  OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
+  VENDORED_OPENCV="$HOME/vendor/opencv"
+  OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
+
+  if [ -d "$OPENCV_CACHE" ]; then
+    echo "-----> Reusing cached OpenCV ($OPENCV_PACKAGE_ETAG)"
+    cp -a $OPENCV_CACHE $VENDORED_OPENCV
+  else
+    echo "-----> Fetching and caching OpenCV ($OPENCV_PACKAGE_ETAG)"
+    mkdir -p $VENDORED_OPENCV
+    curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
+    mkdir -p $CACHE_DIR
+    cp -a $VENDORED_OPENCV $OPENCV_CACHE
+  fi
+
+  # vendor
+  echo "-----> Vendoring OpenCV shared objects into slug"
+  VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
+  mkdir -p $VENDORED_SO
+  cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
+
+  # runtime
+  mkdir -p "$BUILD_DIR/.profile.d"
+  echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" > $BUILD_DIR/.profile.d/opencv.sh
+  echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/opencv.sh
+
+  # try to add it to $PATH
+  echo "export PATH=\"\$HOME/vendor/opencv/lib:$PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
+  echo "export PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:$PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
+  echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
+  echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
+
+}
+
+header "Fetch and build OpenCV"
+getandbuild_opencv | indent
+
+
+
+
+
+
 header "Installing binaries"
 install_bins | indent
 
