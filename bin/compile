@@ -181,7 +181,10 @@ build_dependencies() {
 }
 
 header "Building dependencies"
-# export PKG_CONFIG_PATH="/app/lib/pkgconfig"
+export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig"
+echo $PKG_CONFIG_PATH
+export LD_LIBRARY_PATH = "$BUILD_DIR/lib" 
+echo $LD_LIBRARY_PATH
  ls -la "$BUILD_DIR/lib/pkgconfig/opencv.pc"
 build_dependencies | indent
 
