@@ -62,6 +62,33 @@ header "Creating runtime environment"
 create_env # can't indent the whole thing because piping causes subshells; no exporting possible
 list_node_config | indent
 
+install_bins() {
+  local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
+  local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
+  local npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
+
+  if [ -n "$iojs_engine" ]; then
+    echo "engines.iojs (package.json):  $iojs_engine (iojs)"
+  else
+    echo "engines.node (package.json):  ${node_engine:-unspecified}"
+  fi
+  echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
+  echo ""
+
+  if [ -n "$iojs_engine" ]; then
+    warn_node_engine "$iojs_engine"
+    install_iojs "$iojs_engine" "$BUILD_DIR/.heroku/node"
+  else
+    warn_node_engine "$node_engine"
+    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node"
+  fi
+  install_npm "$npm_engine" "$BUILD_DIR/.heroku/node"
+  warn_old_npm
+}
+
+header "Installing binaries"
+install_bins | indent
+
 getandbuild_opencv(){
   # fetch and cache the vulcan build
   OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
@@ -88,8 +115,7 @@ getandbuild_opencv(){
   AAA="$BUILD_DIR/lib"
   mkdir -p $AAA
   cp -a "$VENDORED_OPENCV/lib/." $AAA
-  ls -la $AAA
-  export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+  export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig"
   echo "PKG_CONFIG_PATH = "$PKG_CONFIG_PATH
   # runtime
   # mkdir -p "$BUILD_DIR/.profile.d"
@@ -122,34 +148,6 @@ header "Fetch and build OpenCV"
 getandbuild_opencv | indent
 
 
-
-
-install_bins() {
-  local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
-  local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
-  local npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
-
-  if [ -n "$iojs_engine" ]; then
-    echo "engines.iojs (package.json):  $iojs_engine (iojs)"
-  else
-    echo "engines.node (package.json):  ${node_engine:-unspecified}"
-  fi
-  echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
-  echo ""
-
-  if [ -n "$iojs_engine" ]; then
-    warn_node_engine "$iojs_engine"
-    install_iojs "$iojs_engine" "$BUILD_DIR/.heroku/node"
-  else
-    warn_node_engine "$node_engine"
-    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node"
-  fi
-  install_npm "$npm_engine" "$BUILD_DIR/.heroku/node"
-  warn_old_npm
-}
-
-header "Installing binaries"
-install_bins | indent
 
 restore_cache() {
   local cache_status=$(get_cache_status)
