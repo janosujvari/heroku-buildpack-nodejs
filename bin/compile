@@ -8,6 +8,8 @@ set -o pipefail   # don't ignore exit codes when piping output
 set -o nounset    # fail on unset variables
 unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 
+echo "heroku buildpack ----> https://github.com/janosujvari/heroku-buildpack-nodejs"
+
 ### Configure directories
 
 BUILD_DIR=${1:-}
@@ -42,7 +44,7 @@ trap 'handle_failure' ERR
 [ -e "$BUILD_DIR/node_modules" ] && PREBUILD=true || PREBUILD=false
 
 ### Failures that should be caught immediately
-ls -l $BUILD_DIR
+
 fail_invalid_package_json "$BUILD_DIR"
 warn_prebuilt_modules "$BUILD_DIR"
 warn_missing_package_json "$BUILD_DIR"
