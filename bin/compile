@@ -211,3 +211,6 @@ summarize_build() {
 
 header "Build succeeded!"
 summarize_build | indent
+
+export PKG_CONFIG_PATH="/app/lib/pkgconfig:$PKG_CONFIG_PATH"
+echo $PKG_CONFIG_PATH
