@@ -60,31 +60,6 @@ header "Creating runtime environment"
 create_env # can't indent the whole thing because piping causes subshells; no exporting possible
 list_node_config | indent
 
-install_bins() {
-  local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
-  local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
-  local npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
-
-  if [ -n "$iojs_engine" ]; then
-    echo "engines.iojs (package.json):  $iojs_engine (iojs)"
-  else
-    echo "engines.node (package.json):  ${node_engine:-unspecified}"
-  fi
-  echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
-  echo ""
-
-  if [ -n "$iojs_engine" ]; then
-    warn_node_engine "$iojs_engine"
-    install_iojs "$iojs_engine" "$BUILD_DIR/.heroku/node"
-  else
-    warn_node_engine "$node_engine"
-    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node"
-  fi
-  install_npm "$npm_engine" "$BUILD_DIR/.heroku/node"
-  warn_old_npm
-}
-
-
 getandbuild_opencv(){
   # fetch and cache the vulcan build
   OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
@@ -120,6 +95,19 @@ getandbuild_opencv(){
   echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
   echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
 
+  export LD_LIBRARY_PATH="$HOME/vendor/opencv/lib:$LD_LIBRARY_PATH"
+  export PKG_CONFIG_PATH="$HOME/vendor/opencv/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+  echo "-----> PATH"
+  echo $PATH
+
+  echo "-----> LD_LIBRARY_PATH"
+  echo $LD_LIBRARY_PATH
+
+  echo "-----> PKG_CONFIG_PATH"
+  echo $PKG_CONFIG_PATH
+
+  echo "-----> OpenCV END"
 }
 
 header "Fetch and build OpenCV"
@@ -128,7 +116,29 @@ getandbuild_opencv | indent
 
 
 
+install_bins() {
+  local node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
+  local iojs_engine=$(read_json "$BUILD_DIR/package.json" ".engines.iojs")
+  local npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
 
+  if [ -n "$iojs_engine" ]; then
+    echo "engines.iojs (package.json):  $iojs_engine (iojs)"
+  else
+    echo "engines.node (package.json):  ${node_engine:-unspecified}"
+  fi
+  echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
+  echo ""
+
+  if [ -n "$iojs_engine" ]; then
+    warn_node_engine "$iojs_engine"
+    install_iojs "$iojs_engine" "$BUILD_DIR/.heroku/node"
+  else
+    warn_node_engine "$node_engine"
+    install_nodejs "$node_engine" "$BUILD_DIR/.heroku/node"
+  fi
+  install_npm "$npm_engine" "$BUILD_DIR/.heroku/node"
+  warn_old_npm
+}
 
 header "Installing binaries"
 install_bins | indent
@@ -182,45 +192,6 @@ cache_build() {
 
 header "Caching build"
 cache_build | indent
-
-
-
-# fetch and cache the vulcan build
-OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
-OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
-VENDORED_OPENCV="/app/vendor/opencv"
-OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
-
-if [ -d "$OPENCV_CACHE" ]; then
-  echo "-----> Reusing cached OpenCV ($OPENCV_PACKAGE_ETAG)"
-  cp -a $OPENCV_CACHE $VENDORED_OPENCV
-else
-  echo "-----> Fetching and caching OpenCV ($OPENCV_PACKAGE_ETAG)"
-  mkdir -p $VENDORED_OPENCV
-  curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
-  mkdir -p $CACHE_DIR
-  cp -a $VENDORED_OPENCV $OPENCV_CACHE
-fi
-
-# vendor
-echo "-----> Vendoring OpenCV shared objects into slug"
-VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
-mkdir -p $VENDORED_SO
-cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
-
-# runtime
-mkdir -p "$BUILD_DIR/.profile.d"
-echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" > $BUILD_DIR/.profile.d/opencv.sh
-echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/opencv.sh
-
-
-
-
-
-
-
-
-
 
 summarize_build() {
   cd $BUILD_DIR
