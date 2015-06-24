@@ -29,7 +29,6 @@ detect_memory() {
 
 export PATH="$HOME/.heroku/node/bin:$HOME/bin:$HOME/node_modules/.bin:$PATH"
 export NODE_HOME="$HOME/.heroku/node"
-export PKG_CONFIG_PATH="$HOME/vendor/opencv/lib/pkgconfig"
 
 calculate_concurrency
 log_concurrency
