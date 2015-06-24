@@ -104,10 +104,10 @@ getandbuild_opencv(){
   echo $PATH
 
   echo "-----> LD_LIBRARY_PATH"
-  echo $LD_LIBRARY_PATH
+  # echo $LD_LIBRARY_PATH
 
   echo "-----> PKG_CONFIG_PATH"
-  echo $PKG_CONFIG_PATH
+  # echo $PKG_CONFIG_PATH
 
   echo "-----> OpenCV END"
 }
