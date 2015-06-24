@@ -95,7 +95,7 @@ getandbuild_opencv(){
   echo "export PATH=\"\$HOME/vendor/opencv/lib:$PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
   echo "export PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:$PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
   echo "export LD_LIBRARY_PATH=\"\$HOME/vendor/opencv/lib:\$LD_LIBRARY_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
-  echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig:\$PKG_CONFIG_PATH\"" >> $BUILD_DIR/.profile.d/nodejs.sh
+  echo "export PKG_CONFIG_PATH=\"\$HOME/vendor/opencv/lib/pkgconfig\"" >> $BUILD_DIR/.profile.d/nodejs.sh
 
   export LD_LIBRARY_PATH="$HOME/vendor/opencv/lib"
   export PKG_CONFIG_PATH="$HOME/vendor/opencv/lib/pkgconfig"
