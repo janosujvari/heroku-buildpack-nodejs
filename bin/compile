@@ -10,7 +10,6 @@ unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 
 echo "heroku buildpack ----> https://github.com/janosujvari/heroku-buildpack-nodejs"
 unset PKG_CONFIG_PATH
-echo $PKG_CONFIG_PATH
 ### Configure directories
 
 BUILD_DIR=${1:-}
