@@ -91,7 +91,10 @@ install_bins | indent
 
 getandbuild_opencv(){
   # fetch and cache the vulcan build
-  OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
+  # OPENCV_PACKAGE="http://s3.amazonaws.com/tznode/vulcan-compiled-opencv.tgz"
+
+  OPENCV_PACKAGE="http://s3.amazonaws.com/jgtr-heroku/default/opencv2.4.6_standalone.tar.gz"
+
   OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
   VENDORED_OPENCV="$HOME/vendor/opencv"
   OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
@@ -114,12 +117,16 @@ getandbuild_opencv(){
   cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
   AAA="$BUILD_DIR/lib"
   mkdir -p $AAA
-  cp -a "$VENDORED_OPENCV/lib/." $AAA
+  # cp -a "$VENDORED_OPENCV/lib/." $AAA
+  cp -a "$VENDORED_OPENCV/." $BUILD_DIR
   export PKG_CONFIG_PATH="/app/lib/pkgconfig"
   echo "PKG_CONFIG_PATH = "$PKG_CONFIG_PATH
   # runtime
   # mkdir -p "$BUILD_DIR/.profile.d"
 
+  file="$BUILD_DIR/.profile.d/opencv.sh"
+  [[ -f "$file" ]] && rm -f "$file"
+  
   echo "export LD_LIBRARY_PATH=\"\$HOME/lib\"" > $BUILD_DIR/.profile.d/opencv.sh
   echo "export PKG_CONFIG_PATH=\"\$HOME/lib/pkgconfig\"" >> $BUILD_DIR/.profile.d/opencv.sh
 
@@ -136,10 +143,10 @@ getandbuild_opencv(){
   echo $PATH
 
   echo "-----> LD_LIBRARY_PATH"
-  # echo $LD_LIBRARY_PATH
+  echo $LD_LIBRARY_PATH
 
   echo "-----> PKG_CONFIG_PATH"
-  # echo $PKG_CONFIG_PATH
+  echo $PKG_CONFIG_PATH
 
   echo "-----> OpenCV END"
 }
