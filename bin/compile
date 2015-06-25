@@ -109,7 +109,7 @@ getandbuild_opencv(){
     mkdir -p $CACHE_DIR
     cp -a $VENDORED_OPENCV $OPENCV_CACHE
   fi
-  ls -l '$VENDORED_OPENCV/'
+  ls -l "$VENDORED_OPENCV/"
   # vendor
   echo "-----> Vendoring OpenCV shared objects into slug"
   VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
