@@ -107,7 +107,7 @@ getandbuild_opencv(){
     mkdir -p $VENDORED_OPENCV
     curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
     mkdir -p $CACHE_DIR
-    cp -a $VENDORED_OPENCV $OPENCV_CACHE
+    cp -a "$VENDORED_OPENCV/opencvinstall" $OPENCV_CACHE
   fi
   ls -l "$VENDORED_OPENCV/"
   # vendor
