@@ -107,18 +107,18 @@ getandbuild_opencv(){
     mkdir -p $VENDORED_OPENCV
     curl $OPENCV_PACKAGE -s -o - | tar xzf - -C $VENDORED_OPENCV
     mkdir -p $CACHE_DIR
-    cp -a "$VENDORED_OPENCV/opencvinstall" $OPENCV_CACHE
+    cp -a $VENDORED_OPENCV $OPENCV_CACHE
   fi
-  ls -l "$VENDORED_OPENCV/"
+  ls -l "$VENDORED_OPENCV/opencvinstall/"
   # vendor
   echo "-----> Vendoring OpenCV shared objects into slug"
   VENDORED_SO="$BUILD_DIR/vendor/opencv/lib"
   mkdir -p $VENDORED_SO
-  cp -a "$VENDORED_OPENCV/lib/." $VENDORED_SO
+  cp -a "$VENDORED_OPENCV/opencvinstall/lib/." $VENDORED_SO
   AAA="$BUILD_DIR/lib"
   mkdir -p $AAA
   # cp -a "$VENDORED_OPENCV/lib/." $AAA
-  cp -a "$VENDORED_OPENCV/." $BUILD_DIR
+  cp -a "$VENDORED_OPENCV/opencvinstall/." $BUILD_DIR
   export PKG_CONFIG_PATH="/app/lib/pkgconfig"
   echo "PKG_CONFIG_PATH = "$PKG_CONFIG_PATH
   # runtime
