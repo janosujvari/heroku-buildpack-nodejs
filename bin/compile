@@ -109,7 +109,8 @@ getandbuild_opencv(){
   echo "-----> Unpacking ... "
   tar -xzf $CACHE_DIR/env.tar.gz -C $BUILD_DIR
 
-
+  export LD_LIBRARY_PATH="$BUILD_DIR/.heroku/vendor/lib"
+  export PKG_CONFIG_PATH="$BUILD_DIR/.heroku/vendor/lib/pkgconfig"
 
 
   
@@ -188,6 +189,14 @@ header "Restoring cache"
 restore_cache | indent
 
 build_dependencies() {
+
+  echo "-----> LD_LIBRARY_PATH"
+  echo $LD_LIBRARY_PATH
+  echo "-----> PKG_CONFIG_PATH"
+  echo $PKG_CONFIG_PATH
+
+
+
   if $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
     rebuild_node_modules "$BUILD_DIR"
