@@ -26,13 +26,16 @@ detect_memory() {
     *) echo "$default";;
   esac
 }
-
+log_env() {
+  echo "Environmental variables"
+  env
+}
 export PATH="$HOME/.heroku/node/bin:$HOME/bin:$HOME/node_modules/.bin:$PATH"
 export NODE_HOME="$HOME/.heroku/node"
 
 calculate_concurrency
 log_concurrency
-echo "nodejs.sh --> janos"
+log_env
 export MEMORY_AVAILABLE=$MEMORY_AVAILABLE
 export WEB_MEMORY=$WEB_MEMORY
 export WEB_CONCURRENCY=$WEB_CONCURRENCY
