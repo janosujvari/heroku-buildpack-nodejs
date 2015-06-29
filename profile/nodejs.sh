@@ -32,7 +32,7 @@ export NODE_HOME="$HOME/.heroku/node"
 
 calculate_concurrency
 log_concurrency
-
+echo "nodejs.sh --> janos"
 export MEMORY_AVAILABLE=$MEMORY_AVAILABLE
 export WEB_MEMORY=$WEB_MEMORY
 export WEB_CONCURRENCY=$WEB_CONCURRENCY

@@ -151,8 +151,8 @@ getandbuild_opencv(){
   echo "-----> OpenCV END"
 }
 
-header "Fetch and build OpenCV"
-getandbuild_opencv | indent
+# header "Fetch and build OpenCV"
+# getandbuild_opencv | indent
 
 
 
@@ -188,11 +188,6 @@ build_dependencies() {
 }
 
 header "Building dependencies"
-export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig"
-echo $PKG_CONFIG_PATH
-export LD_LIBRARY_PATH="$BUILD_DIR/lib" 
-echo $LD_LIBRARY_PATH
- ls -la "$BUILD_DIR/lib/pkgconfig/opencv.pc"
 build_dependencies | indent
 
 cache_build() {
@@ -218,8 +213,3 @@ summarize_build() {
 
 header "Build succeeded!"
 summarize_build | indent
-
-export PKG_CONFIG_PATH="/app/lib/pkgconfig":$PKG_CONFIG_PATH
-export PATH=$PATH:$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH="/app/lib"
-echo $PKG_CONFIG_PATH
