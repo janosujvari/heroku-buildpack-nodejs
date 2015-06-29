@@ -109,11 +109,17 @@ getandbuild_opencv(){
   echo "-----> Unpacking ... "
   tar -xzf $CACHE_DIR/env.tar.gz -C $BUILD_DIR
 
+  # now
   export LD_LIBRARY_PATH="$BUILD_DIR/.heroku/vendor/lib"
   export PKG_CONFIG_PATH="$BUILD_DIR/.heroku/vendor/lib/pkgconfig"
 
-
+  # runtime
+  file="$BUILD_DIR/.profile.d/opencv.sh"
+  [[ -f "$file" ]] && rm -f "$file"
+  echo "export LD_LIBRARY_PATH=\"\$HOME/.heroku/vendor/lib\"" > $BUILD_DIR/.profile.d/opencv.sh
+  echo "export PKG_CONFIG_PATH=\"\$HOME/.heroku/vendor/lib/pkgconfig\"" >> $BUILD_DIR/.profile.d/opencv.sh
   
+
   # OPENCV_PACKAGE_ETAG=$(curl -s --head "$OPENCV_PACKAGE" | grep -Ei '^etag' | sed -r 's/^etag|[^a-zA-Z0-9]+//gi')
   # VENDORED_OPENCV="$HOME/vendor/opencv"
   # OPENCV_CACHE="$CACHE_DIR/opencv_$OPENCV_PACKAGE_ETAG";
