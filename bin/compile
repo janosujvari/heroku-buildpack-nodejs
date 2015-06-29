@@ -101,11 +101,13 @@ getandbuild_opencv(){
 # tar -xzf $CACHE_DIR/env.tar.gz -C $BUILD_DIR
   OPENCV_PACKAGE="https://s3.amazonaws.com/jgtr-heroku/default/file_for_heroku.tar.gz"
 
-  if [ ! -f $CACHE_DIR/env.tar.gz ]; then
-    echo "-----> Fetching... $OPENCV_PACKAGE"
-    curl -s -L $OPENCV_PACKAGE > $CACHE_DIR/env.tar.gz
-  fi
-
+  # temporarly dissable chache
+  # if [ ! -f $CACHE_DIR/env.tar.gz ]; then
+  #   echo "-----> Fetching... $OPENCV_PACKAGE"
+  #   curl -s -L $OPENCV_PACKAGE > $CACHE_DIR/env.tar.gz
+  # fi
+  echo "-----> Fetching... $OPENCV_PACKAGE"
+  curl -s -L $OPENCV_PACKAGE > $CACHE_DIR/env.tar.gz
   echo "-----> Unpacking ... "
   tar -xzf $CACHE_DIR/env.tar.gz -C $BUILD_DIR
 
