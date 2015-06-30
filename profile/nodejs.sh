@@ -35,7 +35,7 @@ export NODE_HOME="$HOME/.heroku/node"
 
 calculate_concurrency
 log_concurrency
-log_env
+# log_env
 export MEMORY_AVAILABLE=$MEMORY_AVAILABLE
 export WEB_MEMORY=$WEB_MEMORY
 export WEB_CONCURRENCY=$WEB_CONCURRENCY
