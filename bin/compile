@@ -135,8 +135,8 @@ restore_cache() {
   fi
 }
 
-header "Restoring cache"
-restore_cache | indent
+# header "Restoring cache"
+# restore_cache | indent
 
 PREBUILD=false
 build_dependencies() {
