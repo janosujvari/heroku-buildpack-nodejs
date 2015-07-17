@@ -137,7 +137,9 @@ restore_cache() {
 
 header "Restoring cache"
 restore_cache | indent
-
+echo "before find"
+find $BUILD_DIR -name "cv.h"
+echo "after find"
 build_dependencies() {
   if $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
@@ -154,6 +156,7 @@ cache_build() {
   local cache_directories=$(get_cache_directories)
   echo "Clearing previous node cache"
   clear_cache
+
   if [ "$cache_directories" == "" ]; then
     echo "Saving 1 cacheDirectories (default):"
     save_cache_directories "$BUILD_DIR" "$CACHE_DIR" "node_modules"
