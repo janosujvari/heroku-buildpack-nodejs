@@ -137,11 +137,6 @@ restore_cache() {
 
 header "Restoring cache"
 restore_cache | indent
-echo "pwd"
-pwd
-echo "before find"
-find $BUILD_DIR -name "cv.h"
-echo "after find"
 build_dependencies() {
   if $PREBUILD; then
     echo "Prebuild detected (node_modules already exists)"
