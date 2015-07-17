@@ -8,6 +8,8 @@ install_node_modules() {
     if [ -e $build_dir/npm-shrinkwrap.json ]; then
       echo "Installing node modules (package.json + shrinkwrap)"
     else
+      echo "install_node_modules()"
+      pwd
       echo "Installing node modules (package.json)"
     fi
     npm install --unsafe-perm --userconfig $build_dir/.npmrc 2>&1

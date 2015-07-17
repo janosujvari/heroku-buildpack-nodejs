@@ -137,6 +137,8 @@ restore_cache() {
 
 header "Restoring cache"
 restore_cache | indent
+echo "pwd"
+pwd
 echo "before find"
 find $BUILD_DIR -name "cv.h"
 echo "after find"
